@@ -1,0 +1,51 @@
+using UnityEngine;
+
+public class ThePlayerController : MonoBehaviour
+
+{
+    Rigidbody2D rb; //Rigidbody2D is referred to rb
+    Animator anim; //Animator is referred to anim, also a reference to Animator.
+    SpriteRenderer spriteRenderer; //Calls to flip the players sprite.
+
+    public float playerSpeed = 5f; //Sets speed of the player.
+    float horizontal; //This will track what keys are being pressed by the player.
+    float vertical; //This too will track the keys being pressed by the player.    
+
+    void Start()
+    {
+        //rb being the value, GetComponent is collecting part of the information from Rigidbody2D.
+        rb = GetComponent<Rigidbody2D>(); 
+        //Debug.Log("Player Speed is: " + playerSpeed); //Prints into console playerSpeed.
+        anim = GetComponent<Animator>(); //GetComponent is grabbing the Animator.
+        spriteRenderer = GetComponent<SpriteRenderer>(); //Same is being applied to SpriteRenderer.
+    }
+
+    void Update()
+    {
+        horizontal = Input.GetAxisRaw("Horizontal"); //Horizontal value is equal to the input + GetAxisRaw is accessing the games axis.
+        vertical = Input.GetAxisRaw("Vertical"); //The input is equal to the vertical value and is able to access the games axis.
+        //Debug.Log(playerSpeed); //This constantly updates playerSpeed into console.
+
+        bool isMoving = (horizontal != 0 || vertical != 0); //True and False statement for isMoving.
+        anim.SetBool("isMoving", isMoving);
+
+        if (horizontal > 0)
+            spriteRenderer.flipX = true; //If travelling to the left don't flip sprite.
+        else if (horizontal < 0)
+            spriteRenderer.flipX = false; //Else if travelling to the the right, then flip.
+    }
+
+    void FixedUpdate()
+    {
+        //Rigidbody2D.linearVelocity (rb in this instance) is a vector for the linear velocity.
+        //new Vector2 create a new 2D Vector based on the values in the brackets.
+
+        Vector2 direction = new Vector2(horizontal, vertical); //direction would store where the player wants to travel.
+
+        direction = direction.normalized; //Normalise would shrink the vector equaling 1.
+        
+        rb.linearVelocity = direction * playerSpeed;
+
+    }
+}
+
